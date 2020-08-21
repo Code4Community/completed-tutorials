@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Ohio State</title>
+        <style>
+            body {
+                background-color: #fff7f7;
+            }
+            h1, h3 {
+                color: #666;
+            }
+            img {
+                float: right;
+                height: 100px;
+            }
+            #main-campus {
+                color: #bb0000;
+            }
+            .regional-campus {
+                color: green;
+            }
+            p {
+                color: gray;
+            }
+            #band-info {
+                color: black;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>
+            THE Ohio State University
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/Ohio_State_University_seal.svg/150px-Ohio_State_University_seal.svg.png" alt="University Seal">
+        </h1>
+        <p>The Ohio State University (commonly Ohio State or OSU) is a public research university in <a href="https://www.columbus.gov/">Columbus, Ohio</a>. Founded in 1870 as a land-grant university and the ninth university in Ohio with the Morrill Act of 1862,[5] the university was originally known as the Ohio Agricultural and Mechanical College. The college originally focused on various agricultural and mechanical disciplines but it developed into a comprehensive university under the direction of then-Governor (later, U.S. president) Rutherford B. Hayes, and in 1878 the Ohio General Assembly passed a law changing the name to "The Ohio State University".[6] The main campus in Columbus, Ohio, has since grown into the third-largest university campus in the United States.[7]</p>
+        <h3>Campuses</h3>
+        <button id="refresh">Refresh</button>
+        <ul id="campuses">
+            
+        </ul>
+        <h3>Marching Band</h3>
+        <p id="band-info">Ohio State's marching band is known as the best damn band in the land.</p>
+    </body>
+    <script>
+        var campuses = [
+            {
+                name: "Columbus",
+                lat: "40.0067",
+                lon: "-83.0305"
+            },
+            {
+                name: "Lima",
+                lat: "40.7373",
+                lon: "-84.0283"
+            },
+            {
+                name: "Mansfield",
+                lat: "40.7989",
+                lon: "-82.5779"
+            },
+            {
+                name: "Marion",
+                lat: "40.5804",
+                lon: "-83.0915"
+            },
+            {
+                name: "Newark",
+                lat: "40.0581",
+                lon: "-82.4013"
+            },
+            {
+                name: "Wooster",
+                lat: "40.8051",
+                lon: "-81.9351"
+            }
+        ];
+
+        function getWeather(campus) {
+            var url = "https://fcc-weather-api.glitch.me/api/current?lat="+ campus["lat"] +"&lon=" + campus["lon"];
+            fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    console.log(response);
+                    var temp = response["main"]["temp"];
+                    temp = (temp * 9/5) + 32;
+ 
+                    var listItem = document.createElement("LI");
+                    var text = document.createTextNode(campus["name"] + " - " + temp);
+
+                    listItem.appendChild(text);
+
+                    if (campus["name"] == "Columbus") {
+                        listItem.id = "main-campus";
+                    } else {
+                        listItem.classList.add("regional-campus");
+                    }
+
+                    document.getElementById("campuses").appendChild(listItem);
+                });
+        }
+
+        window.addEventListener('load', function () {
+            var campus;
+            for (campus of campuses) {
+                getWeather(campus);
+            }
+        });
+
+        var button = document.getElementById("refresh");
+        button.addEventListener('click', function () {
+            var campus;
+            document.getElementById("campuses").innerHTML = "";
+            for (campus of campuses) {
+                getWeather(campus);
+            }
+        });
+    </script>
+</html>
